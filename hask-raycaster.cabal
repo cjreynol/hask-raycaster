@@ -1,33 +1,35 @@
-name:                hask-raycaster
-version:             0.1.0.0
-synopsis:            Implementation of a raycasting renderer using SDL2
+name:                   hask-raycaster
+version:                0.1.0.0
+synopsis:               Implementation of a raycasting renderer using SDL2
 -- description:
-homepage:            https://github.com/Cjreynol/hask-raycaster
-license:             MIT
-license-file:        LICENSE
-author:              Chad Reynolds
-maintainer:          cjreynol13@aol.com
-copyright: (c) 2018 Chad Reynolds
-category:            Graphics
-build-type:          Simple
-extra-source-files:  README.md
-cabal-version:       >=1.10
+homepage:               https://github.com/Cjreynol/hask-raycaster
+license:                MIT
+license-file:           LICENSE
+author:                 Chad Reynolds
+maintainer:             cjreynol13@aol.com
+copyright:              (c) 2018 Chad Reynolds
+category:               Graphics
+build-type:             Simple
+extra-source-files:     README.md
+cabal-version:          >= 1.10
 
 library
   -- exposed-modules:
   -- other-modules:
   -- other-extensions:
-  build-depends:       base >=4.11 && <4.12, sdl2 >= 2.4
-  hs-source-dirs:      src
-  default-language:    Haskell2010
+  build-depends:        base >= 4.11 && < 4.12, 
+                        sdl2 >= 2.4
+  hs-source-dirs:       src
+  default-language:     Haskell2010
   ghc-options:          -Wall
 
 
 executable hask-raycaster
-  main-is:             Main.hs
+  main-is:              Main.hs
   -- other-modules:
-  -- other-extensions:
-  build-depends:       base >=4.11 && <4.12, sdl2 >= 2.4, text >= 1.2
-  hs-source-dirs:      src
-  default-language:    Haskell2010
+  other-extensions:     OverloadedStrings
+  build-depends:        base >= 4.11 && < 4.12, 
+                        sdl2 >= 2.4
+  hs-source-dirs:       src
+  default-language:     Haskell2010
   ghc-options:          -Wall
