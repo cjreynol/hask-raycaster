@@ -27,7 +27,7 @@ library
 executable hask-raycaster
   main-is:              Main.hs
   -- other-modules:
-  other-extensions:     OverloadedStrings
+  other-extensions:     OverloadedStrings, RecordWildCards
   build-depends:        base >= 4.11 && < 4.12, 
                         sdl2 >= 2.4
   hs-source-dirs:       src
