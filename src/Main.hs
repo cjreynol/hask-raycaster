@@ -21,32 +21,36 @@ import SDL
 main :: IO ()
 main = do
     initializeAll
-    w <- createWindow "Testing" defaultWindow
-    r <- createRenderer w (-1) $ RendererConfig SoftwareRenderer False
-    s <- getWindowSurface w
-    i <- loadBMP "assets/guy.bmp" 
-    let x =  P (V2 0 0)
-    rendererDrawColor r $= V4 255 255 255 255
-    let state = RCState w r s i x
+
+    win <- createWindow "Testing" defaultWindow
+    rend <- createRenderer win (-1) defaultRenderer
+    let pos =  P $ V2 0 0
+    let size = V2 25 25
+
+    let state = RCState win rend pos size
+
     appLoop state
     quit
 
 appLoop :: RCState -> IO ()
 appLoop state = do
     events <- pollEvents
-    let isQuit = any isEscPress events
-    let upPressed = any isUpPress events
-    let nextState = if upPressed then movePos moveSpeed state else state
+    let isQuit = any isEscPress events || any isQuitEvent events
+
+    let delta = sum $ map (getDirVector . getMoveDir) events
+    let nextState = updatePos delta state
 
     draw nextState
     unless isQuit $ appLoop nextState
 
 draw :: RCState -> IO ()
 draw state = do
-            clear $ rcRenderer state
-            _ <- surfaceBlit (rcImage state) Nothing (rcScreen state) (Just $ rcPos state)
-            updateWindowSurface $ rcWindow state
-            present $ rcRenderer state
+            let rend = rcRenderer state
+            rendererDrawColor rend $= V4 255 255 255 255
+            clear rend
+            rendererDrawColor rend $= V4 0 0 0 255
+            fillRect rend $ Just (Rectangle (rcPos state) (rcSize state))
+            present rend
 
 isKeyPress :: Keycode -> Event -> Bool
 isKeyPress keycode event = 
@@ -56,23 +60,56 @@ isKeyPress keycode event =
             keysymKeycode (keyboardEventKeysym keyboardEvent) == keycode
         _ -> False
 
+getMoveDir :: Event -> Maybe Direction
+getMoveDir event 
+    | isUpPress event = Just DUp
+    | isRightPress event = Just DRight
+    | isDownPress event = Just DDown
+    | isLeftPress event = Just DLeft
+    | otherwise = Nothing
+
 isEscPress :: Event -> Bool
 isEscPress = isKeyPress KeycodeEscape
 
 isUpPress :: Event -> Bool
 isUpPress = isKeyPress KeycodeUp
 
+isRightPress :: Event -> Bool
+isRightPress = isKeyPress KeycodeRight
+
+isDownPress :: Event -> Bool
+isDownPress = isKeyPress KeycodeDown
+
+isLeftPress :: Event -> Bool
+isLeftPress = isKeyPress KeycodeLeft
+
+isQuitEvent :: Event -> Bool
+isQuitEvent event 
+    | (eventPayload event) == QuitEvent = True
+    | otherwise = False
+
 data RCState = RCState { 
       rcWindow      :: Window
     , rcRenderer    :: Renderer
-    , rcScreen      :: Surface
-    , rcImage       :: Surface
     , rcPos         :: Point V2 CInt
+    , rcSize        :: V2 CInt
     }
 
-movePos :: V2 CInt -> RCState -> RCState
-movePos delta RCState{..} = RCState rcWindow rcRenderer rcScreen rcImage (rcPos + (P delta))
+data Direction = DUp | DRight | DDown | DLeft
+    deriving Eq
 
-moveSpeed :: V2 CInt
-moveSpeed = V2 5 5
+getDirVector :: Maybe Direction -> V2 CInt
+getDirVector (Just dir)
+    | dir == DUp = V2 0 (-moveSpeed)
+    | dir == DRight = V2 moveSpeed 0
+    | dir == DDown = V2 0 moveSpeed
+    | dir == DLeft = V2 (-moveSpeed) 0
+    | otherwise = error "Impossible direction case"
+getDirVector (Nothing) = V2 0 0
+
+updatePos :: V2 CInt -> RCState -> RCState
+updatePos delta RCState{..} = RCState rcWindow rcRenderer (rcPos + (P delta)) rcSize
+
+moveSpeed :: CInt
+moveSpeed = 5
 
