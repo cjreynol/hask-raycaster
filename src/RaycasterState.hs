@@ -14,8 +14,7 @@ module RaycasterState (
     , updatePos
     ) where
 
-import Data.Int         (Int32)
-import Foreign.C.Types  (CInt(..))
+import Foreign.C.Types  (CInt)
 
 import SDL.Vect         (Point(..), V2(..))
 
@@ -37,7 +36,7 @@ changeVel :: V2 Int -> RaycasterState -> RaycasterState
 changeVel (V2 x y) RaycasterState{..} = RaycasterState viewPos 
                                             (viewVel + 
                                                 (V2 
-                                                (CInt $ (fromIntegral x :: Int32))
-                                                (CInt $ (fromIntegral y :: Int32))))
+                                                (fromIntegral x :: CInt)
+                                                (fromIntegral y :: CInt)))
                                             rectangles
 
