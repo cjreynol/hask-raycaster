@@ -23,10 +23,10 @@ import Direction                    (Direction(..))
 
 getMoveDir :: Event -> Maybe Direction
 getMoveDir event 
-    | isUpPress event = Just DirUp
-    | isRightPress event = Just DirRight
-    | isDownPress event = Just DirDown
-    | isLeftPress event = Just DirLeft
+    | isWPress event = Just DirUp
+    | isDPress event = Just DirRight
+    | isSPress event = Just DirDown
+    | isAPress event = Just DirLeft
     | otherwise = Nothing
 
 isKeyPress :: Keycode -> Event -> Bool
@@ -40,17 +40,17 @@ isKeyPress keycode event =
 isEscPress :: Event -> Bool
 isEscPress = isKeyPress KeycodeEscape
 
-isUpPress :: Event -> Bool
-isUpPress = isKeyPress KeycodeUp
+isWPress :: Event -> Bool
+isWPress = isKeyPress KeycodeW
 
-isRightPress :: Event -> Bool
-isRightPress = isKeyPress KeycodeRight
+isDPress :: Event -> Bool
+isDPress = isKeyPress KeycodeD
 
-isDownPress :: Event -> Bool
-isDownPress = isKeyPress KeycodeDown
+isSPress :: Event -> Bool
+isSPress = isKeyPress KeycodeS
 
-isLeftPress :: Event -> Bool
-isLeftPress = isKeyPress KeycodeLeft
+isAPress :: Event -> Bool
+isAPress = isKeyPress KeycodeA
 
 isQuitEvent :: Event -> Bool
 isQuitEvent event 

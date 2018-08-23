@@ -10,13 +10,13 @@ module Direction (
     , getDirVector
     ) where
 
-import SDL.Vect (V2(..))
+import SDL.Vect         (V2(..))
 
 
 data Direction = DirUp | DirRight | DirDown | DirLeft
     deriving Eq
 
-getDirVector :: Maybe Direction -> V2 Int
+getDirVector :: Maybe Direction -> V2 Double
 getDirVector (Just dir)
     | dir == DirUp = V2 0 (-moveSpeed)
     | dir == DirRight = V2 moveSpeed 0
@@ -25,6 +25,6 @@ getDirVector (Just dir)
     | otherwise = error "Impossible direction case"
 getDirVector (Nothing) = V2 0 0
 
-moveSpeed :: Int
+moveSpeed :: Double
 moveSpeed = 1
 

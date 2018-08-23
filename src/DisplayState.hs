@@ -11,12 +11,12 @@ module DisplayState (
     ) where
 
 import SDL                      (($=))
-import SDL.Vect                 (V2(..), V4(..))
+import SDL.Primitive            (Color, Radius, fillCircle, line)
+import SDL.Vect                 (V4(..))
 import SDL.Video                (Window)
-import SDL.Video.Renderer       (Rectangle(..), Renderer, clear, fillRect, 
-                                    present, rendererDrawColor)
+import SDL.Video.Renderer       (Renderer, clear, present, rendererDrawColor)
 
-import RaycasterState           (RaycasterState(..))
+import RaycasterState           (RaycasterState(..), toPos)
 
 
 data DisplayState = DisplayState { 
@@ -27,9 +27,28 @@ data DisplayState = DisplayState {
 draw :: DisplayState -> RaycasterState -> IO ()
 draw dState rcState = do
     let rend = renderer dState
+    let playerPos = viewPos rcState
+    let dirVect = playerPos + (viewDirVec rcState)
+    let camVect = dirVect + (viewCamVec rcState)
+    let camVect2 = dirVect + (-1 * (viewCamVec rcState)) -- mirrored across dir Vect
+
     rendererDrawColor rend $= V4 255 255 255 255
     clear rend
-    rendererDrawColor rend $= V4 0 0 0 255
-    fillRect rend $ Just (Rectangle (viewPos rcState) (V2 10 10))
+    fillCircle rend (toPos playerPos) playerSize playerColor
+    line rend (toPos playerPos) (toPos dirVect) dirColor
+    line rend (toPos dirVect) (toPos camVect) camColor
+    line rend (toPos dirVect) (toPos camVect2) camColor
     present rend
+
+playerColor :: Color
+playerColor = V4 0 0 0 255
+
+dirColor :: Color
+dirColor = V4 255 0 0 255
+
+camColor :: Color
+camColor = V4 255 0 255 255
+
+playerSize :: Radius
+playerSize = 5
 
