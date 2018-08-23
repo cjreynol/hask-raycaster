@@ -34,20 +34,20 @@ draw dState rcState = do
 
     rendererDrawColor rend $= V4 255 255 255 255
     clear rend
-    fillCircle rend (toPos playerPos) playerSize playerColor
-    line rend (toPos playerPos) (toPos dirVect) dirColor
     line rend (toPos dirVect) (toPos camVect) camColor
     line rend (toPos dirVect) (toPos camVect2) camColor
+    line rend (toPos playerPos) (toPos dirVect) dirColor
+    fillCircle rend (toPos playerPos) playerSize playerColor
     present rend
 
 playerColor :: Color
 playerColor = V4 0 0 0 255
 
 dirColor :: Color
-dirColor = V4 255 0 0 255
+dirColor = V4 205 0 0 255
 
 camColor :: Color
-camColor = V4 255 0 255 255
+camColor = V4 20 205 20 255
 
 playerSize :: Radius
 playerSize = 5

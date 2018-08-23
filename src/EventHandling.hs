@@ -7,6 +7,7 @@ License     : MIT
 
 module EventHandling (
       getMoveDir
+    , getTurnDir
     , isEscPress
     , isQuitEvent
     ) where
@@ -19,6 +20,7 @@ import SDL.Input.Keyboard           (keysymKeycode)
 import SDL.Input.Keyboard.Codes
 
 import Direction                    (Direction(..))
+import TurnDir                      (TurnDir(..))
 
 
 getMoveDir :: Event -> Maybe Direction
@@ -27,6 +29,12 @@ getMoveDir event
     | isDPress event = Just DirRight
     | isSPress event = Just DirDown
     | isAPress event = Just DirLeft
+    | otherwise = Nothing
+
+getTurnDir :: Event -> Maybe TurnDir
+getTurnDir event
+    | isLeftPress event = Just TLeft
+    | isRightPress event = Just TRight
     | otherwise = Nothing
 
 isKeyPress :: Keycode -> Event -> Bool
@@ -51,6 +59,12 @@ isSPress = isKeyPress KeycodeS
 
 isAPress :: Event -> Bool
 isAPress = isKeyPress KeycodeA
+
+isLeftPress :: Event -> Bool
+isLeftPress = isKeyPress KeycodeLeft
+
+isRightPress :: Event -> Bool
+isRightPress = isKeyPress KeycodeRight
 
 isQuitEvent :: Event -> Bool
 isQuitEvent event 

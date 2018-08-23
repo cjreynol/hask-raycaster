@@ -11,14 +11,16 @@ module RaycasterState (
       RaycasterState(..)
     , changeVel
     , defaultRaycasterState
+    , rotateView
     , toPos
     , updatePos
     ) where
 
-import Foreign.C.Types  (CInt)
-
+import Data.Matrix      (Matrix)
 import SDL.Primitive    (Pos)
-import SDL.Vect         (Point(..), V2(..))
+import SDL.Vect         (V2(..))
+
+import TurnDir          (multVector)
 
 
 data RaycasterState = RaycasterState { 
@@ -26,22 +28,26 @@ data RaycasterState = RaycasterState {
     , viewVel       :: V2 Double
     , viewDirVec    :: V2 Double
     , viewCamVec    :: V2 Double
-    , rectangles    :: [Point V2 CInt] 
     }
 
 defaultRaycasterState :: RaycasterState
-defaultRaycasterState = RaycasterState (V2 0 0) (V2 0 0) (V2 0 25) (V2 25 0) []
+defaultRaycasterState = RaycasterState (V2 0 0) (V2 0 0) (V2 0 25) (V2 25 0)
 
 updatePos :: RaycasterState -> RaycasterState
 updatePos RaycasterState{..} = RaycasterState (viewPos + viewVel) 
-                                    viewVel viewDirVec viewCamVec rectangles
+                                    viewVel viewDirVec viewCamVec
 
 changeVel :: V2 Double -> RaycasterState -> RaycasterState
 changeVel delta RaycasterState{..} = RaycasterState viewPos 
                                             (viewVel + delta)
                                             viewDirVec
                                             viewCamVec
-                                            rectangles
+
+rotateView :: Matrix Double -> RaycasterState -> RaycasterState
+rotateView m RaycasterState{..} = RaycasterState viewPos
+                                            viewVel
+                                            (multVector viewDirVec m)
+                                            (multVector viewCamVec m)
 
 toPos :: V2 Double -> Pos
 toPos = fmap round

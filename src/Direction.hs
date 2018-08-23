@@ -1,6 +1,6 @@
 {-|
 Module      : Direction
-Description : Datatype for 2-D Directions
+Description : Datatype for 2-D directions
 Copyright   : (c) Chad Reynolds, 2018
 License     : MIT
 -}

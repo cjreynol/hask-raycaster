@@ -15,6 +15,7 @@ import Control.Monad        (unless)
 import Data.Text            (Text)
 import Foreign.C.Types      (CInt)
 
+import Data.Matrix          (identity)
 import SDL.Event            (pollEvents)
 import SDL.Framerate        (Framerate, Manager, delay_, destroyManager, 
                                 manager, set)
@@ -24,9 +25,10 @@ import SDL.Video.Renderer   (defaultRenderer)
 
 import Direction            (getDirVector)
 import DisplayState         (DisplayState(..), draw)
-import EventHandling        (getMoveDir, isEscPress, isQuitEvent)
+import EventHandling        (getMoveDir, getTurnDir, isEscPress, isQuitEvent)
 import RaycasterState       (RaycasterState, changeVel, defaultRaycasterState,
-                                updatePos)
+                                rotateView, updatePos)
+import TurnDir              (getTurnDirMatrix)
 
 
 main :: IO ()
@@ -46,7 +48,8 @@ appLoop dState rcState man = do
     let isQuit = any isEscPress events || any isQuitEvent events
 
     let delta = sum $ map (getDirVector . getMoveDir) events
-    let nextState = updatePos $ changeVel delta rcState
+    let rotateMat = foldr (*) (identity 2) $ map (getTurnDirMatrix . getTurnDir) events
+    let nextState = rotateView rotateMat $ updatePos $ changeVel delta rcState
 
     draw dState nextState
     delay_ man
