@@ -16,6 +16,8 @@ import Data.Matrix      (Matrix, rowVector, getMatrixAsVector, identity,
 import Data.Vector      (fromList, toList)
 import SDL.Vect         (V2(..))
 
+import Settings         (turnSpeed)
+
 
 data TurnDir = TLeft | TRight
     deriving Eq
@@ -32,10 +34,8 @@ rotMatrixBuilder sp (1, 1) = cos sp
 rotMatrixBuilder sp (2, 1) = -(sin sp)
 rotMatrixBuilder sp (1, 2) = sin sp
 rotMatrixBuilder sp (2, 2) = cos sp
-rotMatrixBuilder _ p = error $ "Unexpected size, should only be 2 x 2 - " ++ (show p)
-
-turnSpeed :: Double     -- radians
-turnSpeed = pi / 8
+rotMatrixBuilder _ p = error $ "Unexpected size, should only be 2 x 2 - " 
+                                ++ (show p)
 
 multVector :: V2 Double -> Matrix Double -> V2 Double
 multVector (V2 x y) m = case v'' of 

@@ -31,7 +31,7 @@ data RaycasterState = RaycasterState {
     }
 
 defaultRaycasterState :: RaycasterState
-defaultRaycasterState = RaycasterState (V2 0 0) (V2 0 0) (V2 0 25) (V2 25 0)
+defaultRaycasterState = RaycasterState (V2 25 25) (V2 0 0) (V2 0 25) (V2 25 0)
 
 updatePos :: RaycasterState -> RaycasterState
 updatePos RaycasterState{..} = RaycasterState (viewPos + viewVel) 

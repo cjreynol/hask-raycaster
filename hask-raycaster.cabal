@@ -33,6 +33,7 @@ executable hask-raycaster
                         DisplayState, 
                         EventHandling, 
                         RaycasterState,
+                        Settings,
                         TurnDir
 
   other-extensions:     OverloadedStrings, RecordWildCards

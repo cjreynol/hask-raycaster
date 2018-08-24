@@ -7,32 +7,50 @@ License     : MIT
 
 module DisplayState (
       DisplayState(DisplayState)
+    , cleanUpDisplayState
+    , defaultDisplayState
     , draw
+    , fpsDelay
     ) where
 
 import SDL                      (($=))
-import SDL.Primitive            (Color, Radius, fillCircle, line)
-import SDL.Vect                 (V4(..))
-import SDL.Video                (Window)
-import SDL.Video.Renderer       (Renderer, clear, present, rendererDrawColor)
+import SDL.Framerate            (Manager, delay_, manager, destroyManager, 
+                                    set)
+import SDL.Primitive            (fillCircle, line)
+import SDL.Video                (Window, createRenderer, createWindow, 
+                                    defaultWindow, destroyWindow)
+import SDL.Video.Renderer       (Renderer, clear, defaultRenderer, present, 
+                                    rendererDrawColor)
 
 import RaycasterState           (RaycasterState(..), toPos)
+import Settings                 (backgroundColor, camColor, dirColor, 
+                                    frameRate, playerColor, playerSize, 
+                                    renderingDriverIndex, windowTitle)
 
 
 data DisplayState = DisplayState { 
-      window      :: Window
-    , renderer    :: Renderer
+      window        :: Window
+    , renderer      :: Renderer
+    , fpsManager    :: Manager
     }
+
+defaultDisplayState :: IO DisplayState
+defaultDisplayState = do
+    w <- createWindow windowTitle defaultWindow
+    r <- createRenderer w renderingDriverIndex defaultRenderer
+    m <- manager
+    set m frameRate
+    return $ DisplayState w r m
 
 draw :: DisplayState -> RaycasterState -> IO ()
 draw dState rcState = do
     let rend = renderer dState
-    let playerPos = viewPos rcState
-    let dirVect = playerPos + (viewDirVec rcState)
-    let camVect = dirVect + (viewCamVec rcState)
-    let camVect2 = dirVect + (-1 * (viewCamVec rcState)) -- mirrored across dir Vect
+        playerPos = viewPos rcState
+        dirVect = playerPos + (viewDirVec rcState)
+        camVect = dirVect + (viewCamVec rcState)
+        camVect2 = dirVect - (viewCamVec rcState) -- mirrored across dirVect
 
-    rendererDrawColor rend $= V4 255 255 255 255
+    rendererDrawColor rend $= backgroundColor
     clear rend
     line rend (toPos dirVect) (toPos camVect) camColor
     line rend (toPos dirVect) (toPos camVect2) camColor
@@ -40,15 +58,10 @@ draw dState rcState = do
     fillCircle rend (toPos playerPos) playerSize playerColor
     present rend
 
-playerColor :: Color
-playerColor = V4 0 0 0 255
+fpsDelay :: DisplayState -> IO ()
+fpsDelay dState = delay_ $ fpsManager dState
 
-dirColor :: Color
-dirColor = V4 205 0 0 255
-
-camColor :: Color
-camColor = V4 20 205 20 255
-
-playerSize :: Radius
-playerSize = 5
-
+cleanUpDisplayState :: DisplayState -> IO ()
+cleanUpDisplayState dState = do
+    destroyManager $ fpsManager dState
+    destroyWindow $ window dState
