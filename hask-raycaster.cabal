@@ -32,6 +32,7 @@ executable hask-raycaster
   other-modules:        Direction, 
                         DisplayState, 
                         EventHandling, 
+                        Layout,
                         RaycasterState,
                         Settings,
                         TurnDir
