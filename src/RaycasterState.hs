@@ -20,6 +20,8 @@ import Data.Matrix      (Matrix)
 import SDL.Primitive    (Pos)
 import SDL.Vect         (V2(V2))
 
+import Layout           (Layout, getLayout)
+import Settings         (defaultLayoutFile)
 import TurnDir          (multVector)
 
 
@@ -28,26 +30,35 @@ data RaycasterState = RaycasterState {
     , viewVel       :: V2 Double
     , viewDirVec    :: V2 Double
     , viewCamVec    :: V2 Double
+    , layout        :: Layout
     }
 
-defaultRaycasterState :: RaycasterState
-defaultRaycasterState = RaycasterState (V2 25 25) (V2 0 0) (V2 0 25) (V2 25 0)
+defaultRaycasterState :: IO RaycasterState
+defaultRaycasterState = do
+    let pos = (V2 25 25)
+        vel = (V2 0 0)
+        dirVec = (V2 0 25)
+        camVec = (V2 25 0)
+    l <- getLayout defaultLayoutFile
+    return $ RaycasterState pos vel dirVec camVec l
 
 updatePos :: RaycasterState -> RaycasterState
 updatePos RaycasterState{..} = RaycasterState (viewPos + viewVel) 
-                                    viewVel viewDirVec viewCamVec
+                                    viewVel viewDirVec viewCamVec layout
 
 changeVel :: V2 Double -> RaycasterState -> RaycasterState
 changeVel delta RaycasterState{..} = RaycasterState viewPos 
                                             (viewVel + delta)
                                             viewDirVec
                                             viewCamVec
+                                            layout
 
 rotateView :: Matrix Double -> RaycasterState -> RaycasterState
 rotateView m RaycasterState{..} = RaycasterState viewPos
                                             viewVel
                                             (multVector viewDirVec m)
                                             (multVector viewCamVec m)
+                                            layout
 
 toPos :: V2 Double -> Pos
 toPos = fmap round

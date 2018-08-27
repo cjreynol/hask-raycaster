@@ -26,7 +26,7 @@ import SDL.Video                (Window, createRenderer, createWindow,
 import SDL.Video.Renderer       (Renderer, clear, defaultRenderer, present, 
                                     rendererDrawColor)
 
-import Layout                   (Layout, (!))
+import Layout                   (Layout, Tile(..), (!))
 import RaycasterState           (RaycasterState(..), toPos)
 import Settings                 (backgroundColor, camColor, dirColor, 
                                     frameRate, playerColor, playerSize, 
@@ -70,17 +70,20 @@ drawTopDown dState rcState = do
     line rend (toPos playerPos) (toPos dirVect) dirColor
     fillCircle rend (toPos playerPos) playerSize playerColor
 
-drawRaycastedView :: DisplayState -> RaycasterState -> Layout -> IO ()
-drawRaycastedView dState rcState layout = do
+drawRaycastedView :: DisplayState -> RaycasterState -> IO ()
+drawRaycastedView dState rcState = do
     let rend = renderer dState
+        world = layout rcState
         (V2 w h) = windowSize
         width = (fromIntegral w) :: Double
         
-        dists = map (\i -> raycast i rcState layout) 
+        dists = map (\i -> raycast i rcState world) 
                     [2 * x / width - 1 | x <- [0..width]]
     return ()
 
-raycast :: Double -> RaycasterState -> Layout -> Double
+type Distance = Double
+
+raycast :: Double -> RaycasterState -> Layout -> (Distance, Tile)
 raycast i rcState layout = undefined
     where
         playerPos@(V2 posX posY) = viewPos rcState

@@ -20,7 +20,6 @@ import DisplayState         (DisplayState, cleanUpDisplayState, clearDisplay,
                                 defaultDisplayState, drawTopDown, 
                                 drawRaycastedView, fpsDelay, updateDisplay)
 import EventHandling        (getMoveDir, getTurnDir, isEscPress, isQuitEvent)
-import Layout               ((!), getLayout)
 import RaycasterState       (RaycasterState, changeVel, defaultRaycasterState,
                                 rotateView, updatePos)
 import TurnDir              (getTurnDirMatrix)
@@ -29,10 +28,9 @@ import TurnDir              (getTurnDirMatrix)
 main :: IO ()
 main = do
     initializeAll
-    layout <- getLayout "test.lay"
-    putStrLn $ show $ layout ! (2, 2)
     dState <- defaultDisplayState
-    appLoop dState defaultRaycasterState
+    rcState <- defaultRaycasterState
+    appLoop dState rcState
     cleanUpDisplayState dState
     quit
 

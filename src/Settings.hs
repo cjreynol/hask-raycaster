@@ -31,6 +31,9 @@ frameRate = 60
 renderingDriverIndex :: CInt
 renderingDriverIndex = -1
 
+defaultLayoutFile :: FilePath
+defaultLayoutFile = "test.lay"
+
 -- options
 playerSize :: Radius
 playerSize = 5
