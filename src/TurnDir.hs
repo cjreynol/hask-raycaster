@@ -14,7 +14,7 @@ module TurnDir (
 import Data.Matrix      (Matrix, rowVector, getMatrixAsVector, identity, 
                             matrix)
 import Data.Vector      (fromList, toList)
-import SDL.Vect         (V2(..))
+import SDL.Vect         (V2(V2))
 
 import Settings         (turnSpeed)
 

@@ -15,12 +15,15 @@ import Foreign.C.Types      (CInt)
 
 import SDL.Framerate        (Framerate)
 import SDL.Primitive        (Color, Radius)
-import SDL.Vect             (V4(..))
+import SDL.Vect             (V2(V2), V4(V4))
 
 
 -- SDL2/Application settings
 windowTitle :: Text
 windowTitle = "Testing"
+
+windowSize :: V2 CInt   -- width x height
+windowSize = V2 800 600
 
 frameRate :: Framerate
 frameRate = 60

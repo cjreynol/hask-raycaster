@@ -8,24 +8,30 @@ License     : MIT
 module DisplayState (
       DisplayState(DisplayState)
     , cleanUpDisplayState
+    , clearDisplay
     , defaultDisplayState
-    , draw
+    , drawTopDown
+    , drawRaycastedView
     , fpsDelay
+    , updateDisplay
     ) where
 
 import SDL                      (($=))
 import SDL.Framerate            (Manager, delay_, manager, destroyManager, 
                                     set)
 import SDL.Primitive            (fillCircle, line)
+import SDL.Vect                 (V2(V2))
 import SDL.Video                (Window, createRenderer, createWindow, 
                                     defaultWindow, destroyWindow)
 import SDL.Video.Renderer       (Renderer, clear, defaultRenderer, present, 
                                     rendererDrawColor)
 
+import Layout                   (Layout, (!))
 import RaycasterState           (RaycasterState(..), toPos)
 import Settings                 (backgroundColor, camColor, dirColor, 
                                     frameRate, playerColor, playerSize, 
-                                    renderingDriverIndex, windowTitle)
+                                    renderingDriverIndex, windowSize, 
+                                    windowTitle)
 
 
 data DisplayState = DisplayState { 
@@ -42,21 +48,58 @@ defaultDisplayState = do
     set m frameRate
     return $ DisplayState w r m
 
-draw :: DisplayState -> RaycasterState -> IO ()
-draw dState rcState = do
+clearDisplay :: DisplayState -> IO ()
+clearDisplay dState = do
+    let rend = renderer dState
+    rendererDrawColor rend $= backgroundColor
+    clear rend
+    
+updateDisplay :: DisplayState -> IO ()
+updateDisplay dState = present (renderer dState)
+
+drawTopDown :: DisplayState -> RaycasterState -> IO ()
+drawTopDown dState rcState = do
     let rend = renderer dState
         playerPos = viewPos rcState
         dirVect = playerPos + (viewDirVec rcState)
         camVect = dirVect + (viewCamVec rcState)
         camVect2 = dirVect - (viewCamVec rcState) -- mirrored across dirVect
 
-    rendererDrawColor rend $= backgroundColor
-    clear rend
     line rend (toPos dirVect) (toPos camVect) camColor
     line rend (toPos dirVect) (toPos camVect2) camColor
     line rend (toPos playerPos) (toPos dirVect) dirColor
     fillCircle rend (toPos playerPos) playerSize playerColor
-    present rend
+
+drawRaycastedView :: DisplayState -> RaycasterState -> Layout -> IO ()
+drawRaycastedView dState rcState layout = do
+    let rend = renderer dState
+        (V2 w h) = windowSize
+        width = (fromIntegral w) :: Double
+        
+        dists = map (\i -> raycast i rcState layout) 
+                    [2 * x / width - 1 | x <- [0..width]]
+    return ()
+
+raycast :: Double -> RaycasterState -> Layout -> Double
+raycast i rcState layout = undefined
+    where
+        playerPos@(V2 posX posY) = viewPos rcState
+        squareX = (fromIntegral $ floor posX) :: Double
+        squareY = (fromIntegral $ floor posY) :: Double
+        dirVect@(V2 dirX dirY) = playerPos + (viewDirVec rcState)
+        (V2 camX camY) = dirVect + (viewCamVec rcState)
+        rayDirX = dirX + camX * i
+        rayDirY = dirY + camY * i
+        deltaDistX = abs $ 1 / rayDirX
+        deltaDistY = abs $ 1 / rayDirY
+        sideDistX = if rayDirX < 0 
+                        then (posX - squareX) * deltaDistX 
+                        else (squareX + 1 - posX) * deltaDistX 
+        sideDistY = if rayDirY < 0 
+                        then (posY - squareY) * deltaDistY 
+                        else (squareY + 1 - posY) * deltaDistY 
+        stepX = (if rayDirX < 0 then -1 else 1) :: Double
+        stepY = (if rayDirY < 0 then -1 else 1) :: Double
 
 fpsDelay :: DisplayState -> IO ()
 fpsDelay dState = delay_ $ fpsManager dState
@@ -65,3 +108,4 @@ cleanUpDisplayState :: DisplayState -> IO ()
 cleanUpDisplayState dState = do
     destroyManager $ fpsManager dState
     destroyWindow $ window dState
+

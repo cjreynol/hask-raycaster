@@ -18,7 +18,7 @@ module RaycasterState (
 
 import Data.Matrix      (Matrix)
 import SDL.Primitive    (Pos)
-import SDL.Vect         (V2(..))
+import SDL.Vect         (V2(V2))
 
 import TurnDir          (multVector)
 

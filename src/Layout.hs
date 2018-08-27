@@ -53,3 +53,4 @@ getLayout :: FilePath -> IO Layout
 getLayout f = do
     fileString <- readFile f
     return $ (createLayout . (createAssocList . parseFileString)) fileString
+

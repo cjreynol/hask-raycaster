@@ -16,8 +16,9 @@ import SDL.Event            (pollEvents)
 import SDL.Init             (initializeAll, quit)
 
 import Direction            (getDirVector)
-import DisplayState         (DisplayState, cleanUpDisplayState, 
-                                defaultDisplayState, draw, fpsDelay)
+import DisplayState         (DisplayState, cleanUpDisplayState, clearDisplay, 
+                                defaultDisplayState, drawTopDown, 
+                                drawRaycastedView, fpsDelay, updateDisplay)
 import EventHandling        (getMoveDir, getTurnDir, isEscPress, isQuitEvent)
 import Layout               ((!), getLayout)
 import RaycasterState       (RaycasterState, changeVel, defaultRaycasterState,
@@ -44,7 +45,10 @@ appLoop dState rcState = do
                         map (getTurnDirMatrix . getTurnDir) events
         nextState = rotateView rotateMat $ updatePos $ changeVel delta rcState
 
-    draw dState nextState
+    clearDisplay dState
+    drawTopDown dState nextState
+    updateDisplay dState
+
     fpsDelay dState
     unless isQuit $ appLoop dState nextState
 

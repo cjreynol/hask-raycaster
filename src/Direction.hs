@@ -10,7 +10,7 @@ module Direction (
     , getDirVector
     ) where
 
-import SDL.Vect     (V2(..))
+import SDL.Vect     (V2(V2))
 
 import Settings     (moveSpeed)
 
