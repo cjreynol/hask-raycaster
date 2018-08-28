@@ -13,12 +13,18 @@ filtered out and ignored.
 
 module Layout (
       Layout
-    , Tile
+    , Tile(..)
     , (!)
     , getLayout
+    , tileToColor
     ) where
 
-import Data.Array   (Array, (!), array)
+import Data.Array           (Array, (!), array)
+
+import SDL.Primitive        (Color)
+
+import Settings             (wall1Color, wall1DarkColor, wall2Color, 
+                                wall2DarkColor)
 
 
 type Layout = Array (Int, Int) Tile
@@ -53,4 +59,10 @@ getLayout :: FilePath -> IO Layout
 getLayout f = do
     fileString <- readFile f
     return $ (createLayout . (createAssocList . parseFileString)) fileString
+
+tileToColor :: Tile -> Bool -> Color
+tileToColor (Wall1) (True) = wall1Color
+tileToColor (Wall1) (False) = wall1DarkColor
+tileToColor (Wall2) (True) = wall2Color
+tileToColor (Wall2) (False) = wall2DarkColor
 

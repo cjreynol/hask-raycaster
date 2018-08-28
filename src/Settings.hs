@@ -58,3 +58,15 @@ dirColor = V4 205 0 0 255
 camColor :: Color
 camColor = V4 20 205 20 255
 
+wall1Color :: Color
+wall1Color = V4 205 0 0 255
+
+wall1DarkColor :: Color
+wall1DarkColor = V4 100 0 0 255
+
+wall2Color :: Color
+wall2Color = V4 20 205 20 255
+
+wall2DarkColor :: Color
+wall2DarkColor = V4 0 100 0 255
+

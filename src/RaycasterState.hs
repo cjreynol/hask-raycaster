@@ -35,7 +35,7 @@ data RaycasterState = RaycasterState {
 
 defaultRaycasterState :: IO RaycasterState
 defaultRaycasterState = do
-    let pos = (V2 25 25)
+    let pos = (V2 5 5)
         vel = (V2 0 0)
         dirVec = (V2 0 25)
         camVec = (V2 25 0)
