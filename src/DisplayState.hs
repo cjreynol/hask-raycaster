@@ -17,14 +17,15 @@ module DisplayState (
 import SDL                  (($=))
 import SDL.Framerate        (Manager, delay_, manager, destroyManager, 
                                 set)
-import SDL.Video            (Window, createRenderer, createWindow, 
-                                defaultWindow, destroyWindow)
+import SDL.Video            (Window, WindowConfig(..), createRenderer, 
+                                createWindow, defaultWindow, destroyWindow)
 import SDL.Video.Renderer   (Renderer, clear, defaultRenderer, present, 
                                 rendererDrawColor)
 
 import RaycasterState       (RaycasterState(..), toPos)
 import Settings             (backgroundColor, frameRate, 
-                                renderingDriverIndex,  windowTitle)
+                                renderingDriverIndex,  windowSize, 
+                                windowTitle)
 
 
 data DisplayState = DisplayState { 
@@ -35,11 +36,14 @@ data DisplayState = DisplayState {
 
 defaultDisplayState :: IO DisplayState
 defaultDisplayState = do
-    w <- createWindow windowTitle defaultWindow
+    w <- createWindow windowTitle windowConfig
     r <- createRenderer w renderingDriverIndex defaultRenderer
     m <- manager
     set m frameRate
     return $ DisplayState w r m
+
+windowConfig :: WindowConfig
+windowConfig = defaultWindow { windowInitialSize = windowSize }
 
 clearDisplay :: DisplayState -> IO ()
 clearDisplay dState = do

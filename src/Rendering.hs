@@ -100,5 +100,5 @@ raycast i rcState = helper sideDists
         distCorrection :: (Double, Double) -> XSide -> Distance
         distCorrection (mX, mY) xHit 
             | xHit = (mX - posX + (1 - stepX) / 2) / rayDirX
-            | otherwise = (mY - posY + (1 - stepY) / 2)
+            | otherwise = (mY - posY + (1 - stepY) / 2) / rayDirY
 

@@ -21,7 +21,7 @@ import DisplayState         (DisplayState, cleanUpDisplayState, clearDisplay,
 import EventHandling        (getMoveDir, getTurnDir, isEscPress, isQuitEvent)
 import RaycasterState       (RaycasterState, changeVel, defaultRaycasterState,
                                 rotateView, updatePos)
-import Rendering            (drawRaycastedView) --, drawTopDown)
+import Rendering            (drawRaycastedView, drawTopDown)
 import TurnDir              (getTurnDirMatrix)
 
 
@@ -45,7 +45,7 @@ appLoop dState rcState = do
 
     clearDisplay dState
     --drawTopDown dState nextState
-    drawRaycastedView dState rcState
+    drawRaycastedView dState nextState
     updateDisplay dState
 
     fpsDelay dState
