@@ -18,13 +18,15 @@ module RaycasterState (
 
 import Data.Matrix      (Matrix)
 import SDL.Primitive    (Pos)
-import SDL.Vect         (V2(V2))
+import SDL.Vect         (V2)
 
 import Layout           (Layout, getLayout)
-import Settings         (defaultLayoutFile, startPos)
+import Settings         (defaultLayoutFile, startPos, startVel, startDir, 
+                            startCam)
 import TurnDir          (multVector)
 
 
+-- | The state needed to calculate the player's view of the world.
 data RaycasterState = RaycasterState { 
       viewPos       :: V2 Double
     , viewVel       :: V2 Double
@@ -33,25 +35,32 @@ data RaycasterState = RaycasterState {
     , layout        :: Layout
     }
 
+-- | A demo state based on the Settings module and test.layout file.
 defaultRaycasterState :: IO RaycasterState
 defaultRaycasterState = do
     let pos = startPos
-        vel = (V2 0 0)
-        dirVec = (V2 0 25)
-        camVec = (V2 25 0)
+        vel = startVel
+        dirVec = startDir
+        camVec = startCam
     l <- getLayout defaultLayoutFile
     return $ RaycasterState pos vel dirVec camVec l
 
-updatePos :: RaycasterState -> RaycasterState
-updatePos r@RaycasterState{..} = r { viewPos = viewPos + viewVel }
-
+-- | Update the velocity of the state by the given amount.
 changeVel :: V2 Double -> RaycasterState -> RaycasterState
 changeVel delta r@RaycasterState{..} = r { viewVel = viewVel + delta }
 
+-- | Rotate the view vectors by the given matrix.
+-- 
+--  Expects the a rotation matrix generated from TurnDir module function.
 rotateView :: Matrix Double -> RaycasterState -> RaycasterState
 rotateView m r@RaycasterState{..} = r { viewDirVec = multVector viewDirVec m,
                                         viewCamVec = multVector viewCamVec m }
 
+-- | Convenience function to convert from SDL2 type to SDL2-gfx type.
 toPos :: V2 Double -> Pos
 toPos = fmap round
+
+-- | Updates the position based on the current velocity.
+updatePos :: RaycasterState -> RaycasterState
+updatePos r@RaycasterState{..} = r { viewPos = viewPos + viewVel }
 

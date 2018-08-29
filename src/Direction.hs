@@ -15,9 +15,11 @@ import SDL.Vect     (V2(V2))
 import Settings     (moveSpeed)
 
 
+-- | Enumeration for the possible movement directions from key presses.
 data Direction = DirUp | DirRight | DirDown | DirLeft
     deriving Eq
 
+-- | Convert from a direction to a vector to apply to velocity.
 getDirVector :: Maybe Direction -> V2 Double
 getDirVector (Just dir)
     | dir == DirUp = V2 0 (-moveSpeed)

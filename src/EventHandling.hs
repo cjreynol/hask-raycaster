@@ -23,6 +23,7 @@ import Direction                    (Direction(..))
 import TurnDir                      (TurnDir(..))
 
 
+-- | Convert certain key presses to the direction datatype.
 getMoveDir :: Event -> Maybe Direction
 getMoveDir event 
     | isWPress event = Just DirUp
@@ -31,11 +32,22 @@ getMoveDir event
     | isAPress event = Just DirLeft
     | otherwise = Nothing
 
+-- | Convert certain key presses to the turn direction datatype.
 getTurnDir :: Event -> Maybe TurnDir
 getTurnDir event
     | isLeftPress event = Just TLeft
     | isRightPress event = Just TRight
     | otherwise = Nothing
+
+-- | Detect if the Event is an SDL Quit event.
+isQuitEvent :: Event -> Bool
+isQuitEvent event 
+    | (eventPayload event) == QuitEvent = True
+    | otherwise = False
+
+-- | Detect if the escape key has been pressed.
+isEscPress :: Event -> Bool
+isEscPress = isKeyPress KeycodeEscape
 
 isKeyPress :: Keycode -> Event -> Bool
 isKeyPress keycode event = 
@@ -44,9 +56,6 @@ isKeyPress keycode event =
             keyboardEventKeyMotion keyboardEvent == Pressed &&
             keysymKeycode (keyboardEventKeysym keyboardEvent) == keycode
         _ -> False
-
-isEscPress :: Event -> Bool
-isEscPress = isKeyPress KeycodeEscape
 
 isWPress :: Event -> Bool
 isWPress = isKeyPress KeycodeW
@@ -65,9 +74,4 @@ isLeftPress = isKeyPress KeycodeLeft
 
 isRightPress :: Event -> Bool
 isRightPress = isKeyPress KeycodeRight
-
-isQuitEvent :: Event -> Bool
-isQuitEvent event 
-    | (eventPayload event) == QuitEvent = True
-    | otherwise = False
 

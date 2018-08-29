@@ -32,7 +32,10 @@ renderingDriverIndex :: CInt
 renderingDriverIndex = -1
 
 defaultLayoutFile :: FilePath
-defaultLayoutFile = "test.lay"
+defaultLayoutFile = "test.layout"
+
+countLimit :: Int
+countLimit = 100
 
 -- options
 playerSize :: Radius
@@ -40,6 +43,15 @@ playerSize = 5
 
 startPos :: V2 Double
 startPos = V2 10 10
+
+startVel :: V2 Double
+startVel = V2 0 0
+
+startDir :: V2 Double
+startDir = V2 0 25
+
+startCam :: V2 Double
+startCam = V2 25 0
 
 -- speed
 moveSpeed :: Double
@@ -72,4 +84,7 @@ wall2Color = V4 20 205 20 255
 
 wall2DarkColor :: Color
 wall2DarkColor = V4 0 100 0 255
+
+openColor :: Color
+openColor = V4 255 255 255 255
 

@@ -1,7 +1,11 @@
 name:                   hask-raycaster
-version:                0.1.0.0
+version:                0.5.0.0
 synopsis:               Implementation of a raycasting renderer using SDL2
--- description:
+description:            This project is a demo essentially, for the purpose of 
+                        learning about a graphics style that I have always 
+                        enjoyed.  The code is based off of this write-up.  
+                        <https://lodev.org/cgtutor/raycasting.html>
+
 homepage:               https://github.com/Cjreynol/hask-raycaster
 license:                MIT
 license-file:           LICENSE
@@ -12,17 +16,6 @@ category:               Graphics
 build-type:             Simple
 extra-source-files:     README.md
 cabal-version:          >= 1.10
-
-
---library
---  -- exposed-modules:
---  -- other-modules:
---  -- other-extensions:
---  build-depends:        base >= 4.11 && < 4.12, 
---                        sdl2 >= 2.4
---  hs-source-dirs:       src
---  default-language:     Haskell2010
---  ghc-options:          -Wall
 
 
 executable hask-raycaster

@@ -21,10 +21,14 @@ import DisplayState         (DisplayState, cleanUpDisplayState, clearDisplay,
 import EventHandling        (getMoveDir, getTurnDir, isEscPress, isQuitEvent)
 import RaycasterState       (RaycasterState, changeVel, defaultRaycasterState,
                                 rotateView, updatePos)
-import Rendering            (drawRaycastedView, drawTopDown)
+import Rendering            (drawRaycastedView)
 import TurnDir              (getTurnDirMatrix)
 
 
+-- | Execute the main loop including initialization, main loop, and clean-up.
+-- 
+--  The main loop processes the events, updates the position and speed of the 
+--  player, then does the raycasting and renders the screen.
 main :: IO ()
 main = do
     initializeAll
@@ -44,7 +48,6 @@ appLoop dState rcState = do
         nextState = rotateView rotateMat $ updatePos $ changeVel delta rcState
 
     clearDisplay dState
-    --drawTopDown dState nextState
     drawRaycastedView dState nextState
     updateDisplay dState
 

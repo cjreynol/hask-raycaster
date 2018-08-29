@@ -22,41 +22,47 @@ import SDL.Video            (Window, WindowConfig(..), createRenderer,
 import SDL.Video.Renderer   (Renderer, clear, defaultRenderer, present, 
                                 rendererDrawColor)
 
-import RaycasterState       (RaycasterState(..), toPos)
 import Settings             (backgroundColor, frameRate, 
                                 renderingDriverIndex,  windowSize, 
                                 windowTitle)
 
 
+-- | Holds the needed SDL types for drawing on the screen.
 data DisplayState = DisplayState { 
       window        :: Window
     , renderer      :: Renderer
     , fpsManager    :: Manager
     }
 
+-- | Matching demo settings to the default RaycasterState.
 defaultDisplayState :: IO DisplayState
 defaultDisplayState = do
-    w <- createWindow windowTitle windowConfig
+    w <- createWindow windowTitle defaultWindowConfig
     r <- createRenderer w renderingDriverIndex defaultRenderer
     m <- manager
     set m frameRate
     return $ DisplayState w r m
 
-windowConfig :: WindowConfig
-windowConfig = defaultWindow { windowInitialSize = windowSize }
+defaultWindowConfig :: WindowConfig
+defaultWindowConfig = defaultWindow { windowInitialSize = windowSize }
 
+-- | Wipe out the screen with the background color.
 clearDisplay :: DisplayState -> IO ()
 clearDisplay dState = do
     let rend = renderer dState
     rendererDrawColor rend $= backgroundColor
     clear rend
     
+-- | Prompt the window to display the rendering actions taken since the last 
+--  update.
 updateDisplay :: DisplayState -> IO ()
 updateDisplay dState = present (renderer dState)
 
+-- | Pause enough time to cap the FPS at the amount set on Manager creation.
 fpsDelay :: DisplayState -> IO ()
 fpsDelay dState = delay_ $ fpsManager dState
 
+-- | Call the proper functions for shutting down the state for SDL datatypes.
 cleanUpDisplayState :: DisplayState -> IO ()
 cleanUpDisplayState dState = do
     destroyManager $ fpsManager dState

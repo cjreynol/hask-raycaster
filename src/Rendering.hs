@@ -10,16 +10,22 @@ module Rendering (
     , drawRaycastedView
     ) where
 
+import Data.Maybe       (fromJust, isJust, isNothing)
+
 import SDL.Primitive    (Pos, fillCircle, line)
 import SDL.Vect         (V2(V2))
 
 import DisplayState     (DisplayState(..))
-import Layout           (Tile(..), (!), tileToColor)
+import Layout           (Tile(..), tileToColor, maybeGetTile)
 import RaycasterState   (RaycasterState(..), toPos)
 import Settings         (camColor, dirColor, playerColor, playerSize, 
                             windowSize)
 
 
+-- | Draw a top-down view of the player and their view vectors on the screen.
+-- 
+--  Initially used for early testing of the game's update loop, will be 
+--  refactored to be minimap-style view in the future.
 drawTopDown :: DisplayState -> RaycasterState -> IO ()
 drawTopDown dState rcState = do
     let rend = renderer dState
@@ -33,6 +39,7 @@ drawTopDown dState rcState = do
     line rend (toPos playerPos) (toPos dirVect) dirColor
     fillCircle rend (toPos playerPos) playerSize playerColor
 
+-- | Calculate and draw the walls using raycasting.
 drawRaycastedView :: DisplayState -> RaycasterState -> IO ()
 drawRaycastedView dState rcState = do
     let rend = renderer dState
@@ -83,14 +90,16 @@ raycast i rcState = helper sideDists
         (stepX, stepY) = ((if rayDirX < 0 then -1 else 1) :: Double, 
                         (if rayDirY < 0 then -1 else 1) :: Double)
 
-        -- does not account for a situation with no wall to hit
         helper :: (Distance, Distance) -> (Double, Double) 
                     -> XSide -> (Distance, Tile, XSide)
         helper (rayX, rayY) m@(mX, mY) xHit
-            | (world ! (floor mX, floor mY)) /= Open = 
-                ((distCorrection m xHit), 
-                    (world ! (floor mX, floor mY)),
-                    xHit)
+            | isJust (maybeGetTile world (floor mX, floor mY)) 
+                && fromJust (maybeGetTile world (floor mX, floor mY)) /= Open = 
+                    (distCorrection m xHit, 
+                        fromJust $ maybeGetTile world (floor mX, floor mY),
+                        xHit)
+            | isNothing $ maybeGetTile world (floor mX, floor mY) = 
+                    (1, Open, True)
             | rayX < rayY = helper (rayX + deltaDistX, rayY)
                                     (mX + stepX, mY)
                                     True
