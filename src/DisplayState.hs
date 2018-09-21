@@ -17,8 +17,9 @@ module DisplayState (
 import SDL                  (($=))
 import SDL.Framerate        (Manager, delay_, manager, destroyManager, 
                                 set)
-import SDL.Video            (Window, WindowConfig(..), createRenderer, 
-                                createWindow, defaultWindow, destroyWindow)
+import SDL.Video            (Window, WindowConfig(windowInitialSize), 
+                                createRenderer, createWindow, defaultWindow, 
+                                destroyWindow)
 import SDL.Video.Renderer   (Renderer, clear, defaultRenderer, present, 
                                 rendererDrawColor)
 

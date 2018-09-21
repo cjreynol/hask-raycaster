@@ -15,9 +15,11 @@ import Data.Maybe       (fromJust, isJust, isNothing)
 import SDL.Primitive    (Pos, fillCircle, line)
 import SDL.Vect         (V2(V2))
 
-import DisplayState     (DisplayState(..))
-import Layout           (Tile(..), tileToColor, maybeGetTile)
-import RaycasterState   (RaycasterState(..), toPos)
+import DisplayState     (DisplayState(renderer))
+import Layout           (Tile(Open), tileToColor, maybeGetTile)
+import RaycasterState   (RaycasterState(layout, viewPos, viewCamVec, 
+                                        viewDirVec), 
+                            toPos)
 import Settings         (camColor, dirColor, playerColor, playerSize, 
                             windowSize)
 

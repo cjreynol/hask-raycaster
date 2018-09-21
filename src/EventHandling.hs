@@ -12,15 +12,20 @@ module EventHandling (
     , isQuitEvent
     ) where
 
-import SDL.Event                    (Event(..), EventPayload(..), 
-                                        InputMotion(..), 
+import SDL.Event                    (Event(eventPayload), 
+                                        EventPayload(KeyboardEvent, 
+                                                        QuitEvent), 
+                                        InputMotion(Pressed), 
                                         keyboardEventKeyMotion, 
                                         keyboardEventKeysym)
 import SDL.Input.Keyboard           (keysymKeycode)
 import SDL.Input.Keyboard.Codes
 
-import Direction                    (Direction(..))
-import TurnDir                      (TurnDir(..))
+import Direction                    (Direction(DirDown, 
+                                                DirLeft, 
+                                                DirRight, 
+                                                DirUp))
+import TurnDir                      (TurnDir(TLeft, TRight))
 
 
 -- | Convert certain key presses to the direction datatype.
