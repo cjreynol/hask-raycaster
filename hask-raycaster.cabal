@@ -1,28 +1,44 @@
 name:                   hask-raycaster
 version:                0.5.0.0
+cabal-version:          >= 1.2
+build-type:             Simple
+license:                MIT
+license-file:           LICENSE
+copyright:              (c) 2018 Chad Reynolds
+author:                 Chad Reynolds
+maintainer:             cjreynol13@aol.com
+stability:              alpha
+homepage:               https://github.com/Cjreynol/hask-raycaster
+bug-reports:            https://github.com/Cjreynol/hask-raycaster/issues
 synopsis:               Implementation of a raycasting renderer using SDL2
 description:            This project is a demo essentially, for the purpose of 
                         learning about a graphics style that I have always 
                         enjoyed.  The code is based off of this write-up.  
                         <https://lodev.org/cgtutor/raycasting.html>
 
-homepage:               https://github.com/Cjreynol/hask-raycaster
-license:                MIT
-license-file:           LICENSE
-author:                 Chad Reynolds
-maintainer:             cjreynol13@aol.com
-copyright:              (c) 2018 Chad Reynolds
 category:               Graphics
-build-type:             Simple
+tested-with:            GHC == 8.4.3
+data-files:             test.layout
 extra-source-files:     README.md
-cabal-version:          >= 1.10
 
+
+source-repository head
+    type:               git
+    location:           git://github.com/Cjreynol/hask-raycaster.git
 
 executable hask-raycaster
-  main-is:              Main.hs
+    main-is:            Main.hs
+    build-depends:        base      >= 4.11 && < 4.12
+                        , array     >= 0.5  && < 0.6
+                        , matrix    >= 0.3  && < 0.4
+                        , mtl       >= 2.2  && < 2.3
+                        , text      >= 1.2  && < 1.3
+                        , vector    >= 0.12 && < 0.13
+                        , sdl2      >= 2.4  && < 2.5
+                        , sdl2-gfx  >= 0.2  && < 0.3
+                        , sdl2-ttf  >= 2.1  && < 2.2
 
-  hs-source-dirs:       src
-  other-modules:        Direction, 
+    other-modules:      Direction, 
                         DisplayState, 
                         EventHandling, 
                         Layout,
@@ -30,20 +46,10 @@ executable hask-raycaster
                         Rendering, 
                         Settings,
                         TurnDir
-
-  other-extensions:     OverloadedStrings, RecordWildCards
-
-  build-depends:        base >= 4.11 && < 4.12, 
-                        array >= 0.5 && < 0.6,
-                        matrix >= 0.3 && < 0.4,
-                        text >= 1.2 && < 1.3,
-                        vector >= 0.12 && < 0.13,
-                        sdl2 >= 2.4 && < 2.5,
-                        sdl2-gfx >= 0.2 && < 0.3,
-                        sdl2-ttf >= 2.1 && < 2.2
-
-  default-language:     Haskell2010
-  ghc-options:          -Wall 
+    hs-source-dirs:     src
+    other-extensions:   OverloadedStrings, RecordWildCards
+    default-language:   Haskell2010
+    ghc-options:        -Wall 
                         -Wcompat 
                         -Wincomplete-uni-patterns 
                         -Wincomplete-record-updates 
